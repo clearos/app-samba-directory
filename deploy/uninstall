@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -e /var/clearos/samba_directory/initialized ]; then
+    logger -p local6.notice -t installer "app-samba-directory-core - removing initialized file"
+    rm -f /var/clearos/samba_directory/initialized
+fi
+
+if [ -e /var/clearos/samba_directory/lock/initializing  ]; then
+    logger -p local6.notice -t installer "app-samba-directory-core - removing initializing state file"
+    rm -f /var/clearos/samba_directory/lock/initializing
+fi

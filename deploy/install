@@ -1,0 +1,21 @@
+#!/bin/sh
+
+TIMESTAMP=`date "+%b-%d-%Y-%T"`
+
+# Set default configuration
+#--------------------------
+
+logger -p local6.notice -t installer "app-samba-directory-core - setting default configuration"
+
+if [ -e /etc/samba/smb.conf ]; then
+    mv /etc/samba/smb.conf /var/clearos/samba_directory/backup/smb.conf.$TIMESTAMP
+fi
+
+cp /usr/clearos/apps/samba_directory/deploy/smb.conf /etc/samba/smb.conf
+
+# Run ntpdate in an attempt to keeps clocks in sync
+#--------------------------------------------------
+
+ntpdate -u time.clearsdn.com >/dev/null 2>&1
+
+# Add s

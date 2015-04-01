@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Sudoers
+#--------
+
+/usr/sbin/addsudo /usr/bin/samba-tool app-samba-directory-core
+/usr/sbin/addsudo /usr/bin/wbinfo app-samba-directory-core
+/usr/sbin/addsudo /usr/sbin/app-samba-dc-initialize app-samba-directory-core
+
+# Make sure users group exists
+#-----------------------------
+
+/usr/bin/getent group users >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    logger -p local6.notice -t app-samba-directory 'adding users group'
+    /usr/sbin/groupadd -g 100 users >/dev/null 2>&1
+fi

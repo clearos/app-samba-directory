@@ -1,0 +1,160 @@
+#!/usr/clearos/sandbox/usr/bin/php
+<?php
+
+/**
+ * Samba Directory initialization script.
+ *
+ * @category   apps
+ * @package    samba-directory
+ * @subpackage scripts
+ * @author     ClearCenter <developer@clearcenter.com>
+ * @copyright  2012 ClearCenter
+ * @license    http://www.clearcenter.com/app_license ClearCenter license
+ * @link       http://www.clearcenter.com/support/documentation/clearos/samba_directory/
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+// B O O T S T R A P
+///////////////////////////////////////////////////////////////////////////////
+
+$bootstrap = getenv('CLEAROS_BOOTSTRAP') ? getenv('CLEAROS_BOOTSTRAP') : '/usr/clearos/framework/shared';
+require_once $bootstrap . '/bootstrap.php';
+
+///////////////////////////////////////////////////////////////////////////////
+// D E P E N D E N C I E S
+///////////////////////////////////////////////////////////////////////////////
+
+// Classes
+//--------
+
+use \clearos\apps\samba_directory\Accounts_Driver as Accounts_Driver;
+use \clearos\apps\samba_directory\Samba_Directory as Samba_Directory;
+
+clearos_load_library('samba_directory/Accounts_Driver');
+clearos_load_library('samba_directory/Samba_Directory');
+
+// Exceptions
+//-----------
+
+use \Exception as Exception;
+
+///////////////////////////////////////////////////////////////////////////////
+// F U N C T I O N S
+///////////////////////////////////////////////////////////////////////////////
+
+function ttyecho($on)
+{
+    global $ttyecho;
+
+    if ($on) {
+        if (isset($ttyecho))
+            exec('stty ' .$ttyecho);
+    } else {
+        $ttyecho = exec('stty -g');
+        exec('stty -echo');
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// O P T I O N S
+///////////////////////////////////////////////////////////////////////////////
+
+$shortopts  = '';
+$shortopts .= 'p:'; // Password
+$shortopts .= 'd:'; // Domain 
+$shortopts .= 'r:'; // Realm
+$shortopts .= 'n:'; // Netbios name
+$shortopts .= 'c:'; // Server comment
+$shortopts .= 't:'; // Home directory template
+$shortopts .= 'h';  // Help
+
+$help_options  = '';
+$help_options .= "  -r: Windows realm (e.g. DIRECTORY.EXAMPLE.COM)\n";
+$help_options .= "  -d: Windows domain (e.g. Toronto)\n";
+$help_options .= "  -n: Server name\n";
+$help_options .= "  -c: Server comment\n";
+$help_options .= "  -t: Home directory template\n";
+$help_options .= "  -p: Password\n";
+$help_options .= "\n";
+$help_options .= "  -h: Help\n";
+
+$options = getopt($shortopts);
+
+$help = isset($options['h']) ? TRUE : FALSE;
+$realm = isset($options['r']) ? $options['r'] : '';
+$domain = isset($options['d']) ? $options['d'] : '';
+$netbios = isset($options['n']) ? $options['n'] : '';
+$comment = isset($options['c']) ? $options['c'] : '';
+$template = isset($options['t']) ? $options['t'] : '';
+$password = isset($options['p']) ? $options['p'] : '';
+
+///////////////////////////////////////////////////////////////////////////////
+// M A I N
+///////////////////////////////////////////////////////////////////////////////
+
+$samba = new Samba_Directory();
+$driver = new Accounts_Driver();
+
+// Basic usage stuff
+//------------------
+
+if ($help) {
+    echo "usage: " . $argv[0] . " [options]\n";
+    echo $help_options;
+    exit(0);
+}
+
+try {
+    if ($driver->is_initialized()) {
+        echo "Accounts system is already initialized\n";
+        exit(0);
+    }
+} catch (Exception $e) {
+    echo "error: " . $e->GetMessage() . "\n";
+}
+
+// Handle command line options
+//--------------------------------------------------------------------
+
+while ($samba->validate_realm($realm)) {
+    echo 'Windows realm (e.g. DIRECTORY.EXAMPLE.LAN): ';
+    $realm = trim(fgets(STDIN));
+}
+
+while ($samba->validate_domain($domain)) {
+    echo 'Windows domain (e.g. TORONTO): ';
+    $domain = trim(fgets(STDIN));
+}
+
+while ($samba->validate_netbios_name($netbios)) {
+    echo 'Server name (e.g. SERVER1): ';
+    $netbios = trim(fgets(STDIN));
+}
+
+while ($samba->validate_server_string($comment)) {
+    echo 'Server comment (e.g. ClearOS Toronto Server): ';
+    $comment = trim(fgets(STDIN));
+}
+
+while ($samba->validate_home_directory_templates($template)) {
+    echo 'Home Directory template (username_only or with_domain): ';
+    $template = trim(fgets(STDIN));
+}
+
+while ($samba->validate_password($password)) {
+    ttyecho(FALSE); // Disable echo to terminal
+    echo 'Password: ';
+    $password = trim(fgets(STDIN));
+    ttyecho(FALSE); // Re-enable echo to terminal
+}
+
+echo "The following settings will be used to set up the Samba Directory\n\n";
+echo "Realm:           $realm\n";
+echo "Domain:          $domain\n";
+echo "Server name:     $netbios\n";
+echo "Server commment: $comment\n";
+echo "Home directory:  $template\n";
+echo "Password:        " . str_repeat("*", strlen($password)) . "\n";
+echo "\n";
+
+$samba->initialize($password, $domain, $realm, $netbios, $comment, $template);
