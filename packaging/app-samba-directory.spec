@@ -1,7 +1,7 @@
 
 Name: app-samba-directory
 Epoch: 1
-Version: 2.0.24
+Version: 2.0.21
 Release: 1%{dist}
 Summary: Samba Directory
 License: GPLv3
@@ -106,7 +106,6 @@ exit 0
 /usr/clearos/apps/samba_directory/deploy
 /usr/clearos/apps/samba_directory/language
 /usr/clearos/apps/samba_directory/libraries
-/usr/clearos/apps/samba_directory/tests
 /usr/sbin/app-samba-dc-initialize
 /var/clearos/base/daemon/samba.php
 /var/clearos/accounts/drivers/samba_directory.php
