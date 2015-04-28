@@ -97,8 +97,10 @@ function getDirectoryStatus() {
 
 function showData(payload) {
     if (payload.status == 'initializing') {
-        status_message = (payload.init_message) ? payload.init_message : lang_initializing;
-        $("#initialization_result").html('<div class="theme-loading-normal">' + status_message + '</div>');
+        var loading_options = Array();
+        loading_options.text = (payload.init_message) ? payload.init_message : lang_initializing;
+
+        $("#initialization_result").html(theme_loading(loading_options));
         $("#initializing_box").show();
         $("#configuration").hide();
     } else if ((payload.status == 'online') && ($(location).attr('href').match('.*\/settings\/edit$') != null)) {
