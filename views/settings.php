@@ -41,20 +41,20 @@ if ($status === Accounts_Engine::DRIVER_OTHER) {
 //--------------------------------------------------
 
 if ($status === Accounts_Engine::DRIVER_UNSET) {
-    $read_only = FALSE; 
+    $read_only = FALSE;
     $domain_read_only = FALSE;
     $realm_read_only = FALSE;
     $buttons = array(
-        form_submit_custom('submit', lang('samba_directory_initialize_directory')),
+        form_submit_custom('submit', lang('samba_directory_initialize_directory'), 'high', array( 'id' => 'samba_init_button')),
     );
 } else if ($mode === 'view') {
-    $read_only = TRUE; 
+    $read_only = TRUE;
     $domain_read_only = TRUE;
     $realm_read_only = TRUE;
     // $buttons = array(anchor_edit('/app/samba_directory/settings/edit'));
     $buttons = array();
 } else {
-    $read_only = FALSE; 
+    $read_only = FALSE;
     $domain_read_only = TRUE;
     $realm_read_only = TRUE;
     $buttons = array(
@@ -70,8 +70,17 @@ if ($status === Accounts_Engine::DRIVER_UNSET) {
 echo "<div id='initializing_box' style='display:none;'>";
 
 echo infobox_highlight(
-    lang('base_status'), 
+    lang('base_status'),
     "<div id='initialization_result'></div>"
+);
+
+echo "</div>";
+
+echo "<div id='initializing_warning_box' style='display:none;'>";
+
+echo infobox_warning(
+    lang('base_warning'),
+    "<div id='initialization_warning'></div>"
 );
 
 echo "</div>";
@@ -83,6 +92,7 @@ echo "</div>";
 echo "<div id='configuration' style='display:none;'>";
 
 echo "<input type='hidden' id='init_validated' value='$validated'>";
+echo "<input type='hidden' id='init_warning_shown' value='yes'>";
 
 echo form_open('samba_directory/settings/edit');
 echo form_header(lang('base_settings'));

@@ -97,7 +97,7 @@ class Samba_Directory extends Engine
     const COMMAND_SAMBA_INITIALIZE = '/usr/sbin/app-samba-dc-initialize';
     const PATH_BACKUP = '/var/clearos/samba_directory/backup';
     const PATH_SAMBA_DATA = '/var/lib/samba';
-    const FILE_STATUS = '/var/clearos/samba_directory/status';
+    const FILE_INIT_FAILED = '/var/clearos/samba_directory/failed';
     const FILE_CONFIG = '/etc/samba/smb.conf';
     const FILE_INITIALIZED = '/var/clearos/samba_directory/initialized';
     const FILE_INITIALIZE_LOG = 'samba_initialize.log';
@@ -227,9 +227,12 @@ class Samba_Directory extends Engine
      * @return string connection status message
      */
 
-    public function get_connection_status()
+    public function get_initialization_status()
     {
         clearos_profile(__METHOD__, __LINE__);
+
+        $status['code'] = 0;
+        $status['message'] = '';
 
         $file = new File(CLEAROS_TEMP_DIR . '/' . self::FILE_INITIALIZE_LOG);
 
@@ -237,12 +240,23 @@ class Samba_Directory extends Engine
             $lines = $file->get_contents_as_array();
             krsort($lines);
             foreach ($lines as $line) {
-                if (preg_match('/^[^\s]/', $line))
-                    return $line;
+                if (preg_match('/^[^\s]/', $line)) {
+                    // Make warning message a bit less geeky for well known errors
+                    if (preg_match('/password does not meet the complexity criteria/', $line))
+                        $status['message'] = 'Password is not strong enough'; // FIXME translate
+                    else
+                        $status['message'] = $line;
+
+                    break;
+                }
             }
         }
 
-        return '';
+        $error_file = new File(self::FILE_INIT_FAILED);
+        if ($error_file->exists())
+            $status['code'] = 1;
+
+        return $status;
     }
 
     /**
@@ -278,6 +292,13 @@ class Samba_Directory extends Engine
 
         if (! is_null($home_dirs))
             Validation_Exception::is_valid($this->validate_home_directory_templates($home_dirs));
+
+        // Clear initialization state
+        //---------------------------
+
+        $error_file = new File(self::FILE_INIT_FAILED);
+        if ($error_file->exists())
+            $error_file->delete();
 
         // Bail if initialized
         //--------------------
@@ -390,8 +411,32 @@ class Samba_Directory extends Engine
             $options
         );
 
-        if ($retval != 0)
-            throw new Engine_Exception($this->get_connection_status());
+        if ($retval != 0) {
+            // Write out error message
+            //------------------------
+
+            $error_status = $this->get_initialization_status();
+
+            $error_file->create('root', 'root', '644');
+            $error_file->add_lines("$error_message\n");
+
+            // Re-enable built-in DNS server
+            //----------------------------
+
+            if (clearos_library_installed('dns/Dnsmasq')) {
+                clearos_load_library('dns/Dnsmasq');
+                $dnsmasq = new \clearos\apps\dns\Dnsmasq();
+                $dnsmasq->set_state(TRUE);
+
+                // Do a hard restart
+                if ($dnsmasq->get_running_state()) {
+                    $dnsmasq->set_running_state(FALSE);
+                    $dnsmasq->set_running_state(TRUE);
+                }
+            }
+
+            throw new Engine_Exception($error_status['message']);
+        }
 
         // Save LDAP configuration
         //------------------------
@@ -646,3 +691,5 @@ class Samba_Directory extends Engine
         return $samba->validate_server_string($server_string);
     }
 }
+
+// vim: syntax=php ts=4

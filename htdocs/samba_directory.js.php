@@ -43,8 +43,13 @@ $(document).ready(function() {
     // Prep
     //-----
 
+    $("#initializing_warning").hide();
     $("#initializing_box").hide();
     $("#configuration").hide();
+
+    $("#samba_init_button").click(function(){
+        $("#initializing_warning").hide();
+    });
 
     // Run connection attempt
     //-----------------------
@@ -55,6 +60,7 @@ $(document).ready(function() {
 
         $("#initialization_result").html(theme_loading(loading_options));
         $("#initializing_box").show();
+        $("#initializing_warning").hide();
         $("#configuration").hide();
 
         $.ajax({
@@ -102,14 +108,23 @@ function showData(payload) {
 
         $("#initialization_result").html(theme_loading(loading_options));
         $("#initializing_box").show();
+        $("#initializing_warning_box").hide();
         $("#configuration").hide();
+        $("#init_warning_shown").val("no");
     } else if ((payload.status == 'online') && ($(location).attr('href').match('.*\/settings\/edit$') != null)) {
         window.location = '/app/samba_directory/settings/view';
+    } else if ((payload.status == 'uninitialized') && (payload.init_code == 1) && ($("#init_warning_shown").val() == "no")) {
+        $("#initialization_warning").html(payload.init_message);
+        $("#initializing_box").hide();
+        $("#initializing_warning_box").show();
+        $("#configuration").show();
     } else if ($("#init_validated").val() == 1) {
         $("#initializing_box").show();
+        $("#initializing_warning_box").hide();
         $("#configuration").hide();
     } else {
         $("#initializing_box").hide();
+        $("#initializing_warning_box").hide();
         $("#configuration").show();
     }
 }

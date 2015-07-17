@@ -196,7 +196,9 @@ class Settings extends ClearOS_Controller
 
         try {
             $data['status'] = $this->accounts_driver->get_system_status();
-            $data['init_message'] = $this->samba_directory->get_connection_status();
+            $init_status = $this->samba_directory->get_initialization_status();
+            $data['init_code'] = $init_status['code'];
+            $data['init_message'] = $init_status['message'];
             $data['error_code'] = 0;
         } catch (Exception $e) {
             $data['error_code'] = clearos_exception_code($e);
