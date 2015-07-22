@@ -1,6 +1,6 @@
 <?php
 
-$lang['samba_directory_app_description'] = 'The Samba Directory app provides the the necessary tools for users, groups, accounts and other directory services.';
+$lang['samba_directory_app_description'] = 'The Samba Directory app provides the necessary tools for users, groups, accounts and other directory services.';
 $lang['samba_directory_app_name'] = 'Samba Directory';
 $lang['samba_directory_initialize_directory'] = 'Initialize Directory';
 $lang['samba_directory_password_must_be_7_or_more_characters'] = 'Password must be 7 or more characters.';
