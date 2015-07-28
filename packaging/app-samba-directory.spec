@@ -1,7 +1,7 @@
 
 Name: app-samba-directory
 Epoch: 1
-Version: 2.1.8
+Version: 2.1.10
 Release: 1%{dist}
 Summary: Samba Directory
 License: GPLv3
@@ -14,7 +14,7 @@ Requires: app-users
 Requires: app-groups => 1:1.2.3
 
 %description
-The Samba Directory app provides the the necessary tools for users, groups, accounts and other directory services.
+The Samba Directory app provides the necessary tools for users, groups, accounts and other directory services.
 
 %package core
 Summary: Samba Directory - Core
@@ -42,7 +42,7 @@ Requires: samba4-client
 Requires: samba4-winbind-clients
 
 %description core
-The Samba Directory app provides the the necessary tools for users, groups, accounts and other directory services.
+The Samba Directory app provides the necessary tools for users, groups, accounts and other directory services.
 
 This package provides the core API and libraries.
 
