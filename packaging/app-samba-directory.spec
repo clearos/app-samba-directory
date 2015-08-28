@@ -1,7 +1,7 @@
 
 Name: app-samba-directory
 Epoch: 1
-Version: 2.1.10
+Version: 2.1.18
 Release: 1%{dist}
 Summary: Samba Directory
 License: GPLv3
