@@ -17,5 +17,3 @@ cp /usr/clearos/apps/samba_directory/deploy/smb.conf /etc/samba/smb.conf
 #--------------------------------------------------
 
 ntpdate -u time.clearsdn.com >/dev/null 2>&1
-
-# Add s
