@@ -6,6 +6,7 @@
 /usr/sbin/addsudo /usr/bin/samba-tool app-samba-directory-core
 /usr/sbin/addsudo /usr/bin/wbinfo app-samba-directory-core
 /usr/sbin/addsudo /usr/sbin/app-samba-dc-initialize app-samba-directory-core
+/usr/sbin/addsudo /usr/sbin/authconfig app-samba-directory-core
 
 # Make sure users group exists
 #-----------------------------
@@ -14,4 +15,14 @@
 if [ $? -ne 0 ]; then
     logger -p local6.notice -t app-samba-directory 'adding users group'
     /usr/sbin/groupadd -g 100 users >/dev/null 2>&1
+fi
+
+# Revert getent behavior back to Samba 4.1 default
+#-------------------------------------------------
+
+CHECK=`grep "^winbind expand groups[[:space:]]*=" /etc/samba/smb.conf 2>/dev/null`
+
+if [ -z "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-samba-core - reverting winbind expand groups default"
+    sed -i -e "s/global\]/global\]\nwinbind expand groups = 1/" /etc/samba/smb.conf
 fi

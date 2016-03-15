@@ -401,6 +401,7 @@ class Samba_Directory extends Engine
             ' --option=\'winbind enum users = yes\' ' .
             ' --option=\'winbind enum groups = yes\' ' .
             ' --option=\'winbind separator = +\' ' .
+            ' --option=\'winbind expand groups = 1\' ' .
             ' --option=\'wins support = yes\' ' .
             ' --option=\'wins server =\' ' .
             ' --option=\'passwd program = /usr/sbin/userpasswd %u\' ' .
