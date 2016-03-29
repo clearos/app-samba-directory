@@ -510,6 +510,7 @@ class Samba_Directory extends Engine
             '--enablewinbind --enablewinbindauth ' .
             '--disableldap --disableldapauth ' .
             '--krb5kdc=' . $realm . ' --krb5realm=' . $realm . ' ' .
+            '--nostart ' .
             '--update';
 
         $shell = new Shell();

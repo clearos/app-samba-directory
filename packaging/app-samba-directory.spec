@@ -1,7 +1,7 @@
 
 Name: app-samba-directory
 Epoch: 1
-Version: 2.1.18
+Version: 2.2.0
 Release: 1%{dist}
 Summary: Samba Directory
 License: GPLv3
@@ -59,6 +59,7 @@ install -d -m 0755 %{buildroot}/var/clearos/samba_directory/backup
 install -d -m 0755 %{buildroot}/var/clearos/samba_directory/extensions
 install -d -m 0775 %{buildroot}/var/clearos/samba_directory/lock
 install -D -m 0755 packaging/app-samba-dc-initialize %{buildroot}/usr/sbin/app-samba-dc-initialize
+install -D -m 0644 packaging/app-samba-directory-sudoers %{buildroot}/etc/sudoers.d/app-samba-directory
 install -D -m 0644 packaging/samba.php %{buildroot}/var/clearos/base/daemon/samba.php
 install -D -m 0644 packaging/samba_directory.php %{buildroot}/var/clearos/accounts/drivers/samba_directory.php
 
@@ -107,5 +108,6 @@ exit 0
 /usr/clearos/apps/samba_directory/language
 /usr/clearos/apps/samba_directory/libraries
 /usr/sbin/app-samba-dc-initialize
+/etc/sudoers.d/app-samba-directory
 /var/clearos/base/daemon/samba.php
 /var/clearos/accounts/drivers/samba_directory.php

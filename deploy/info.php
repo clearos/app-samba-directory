@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'samba_directory';
-$app['version'] = '2.1.18';
+$app['version'] = '2.2.0';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -69,6 +69,7 @@ $app['core_directory_manifest'] = array(
 $app['core_file_manifest'] = array(
     'samba.php'=> array('target' => '/var/clearos/base/daemon/samba.php'),
     'samba_directory.php' => array('target' => '/var/clearos/accounts/drivers/samba_directory.php'),
+    'app-samba-directory-sudoers' => array('target' => '/etc/sudoers.d/app-samba-directory'),
     'app-samba-dc-initialize' => array(
         'target' => '/usr/sbin/app-samba-dc-initialize',
         'mode' => '0755'
