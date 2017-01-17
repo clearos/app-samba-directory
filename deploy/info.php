@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'samba_directory';
-$app['version'] = '2.2.0';
+$app['version'] = '2.3.0';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -41,13 +41,13 @@ $app['core_requires'] = array(
     'app-mode-core',
     'app-network-core',
     'app-ntp-core',
-    'app-samba-common-core >= 1:1.5.5',
+    'app-samba-common-core >= 1:2.3.0',
     'krb5-workstation',
     'nscd',
-    'samba4',
-    'samba4-dc',
-    'samba4-client',
-    'samba4-winbind-clients',
+    'samba >= 4.4.4',
+    'samba-dc',
+    'samba-client',
+    'samba-winbind-clients',
 );
 
 $app['requires'] = array(

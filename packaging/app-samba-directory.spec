@@ -1,7 +1,7 @@
 
 Name: app-samba-directory
 Epoch: 1
-Version: 2.2.0
+Version: 2.3.0
 Release: 1%{dist}
 Summary: Samba Directory
 License: GPLv3
@@ -33,13 +33,13 @@ Requires: app-ldap-core >= 1:1.5.5
 Requires: app-mode-core
 Requires: app-network-core
 Requires: app-ntp-core
-Requires: app-samba-common-core >= 1:1.5.5
+Requires: app-samba-common-core >= 1:2.3.0
 Requires: krb5-workstation
 Requires: nscd
-Requires: samba4
-Requires: samba4-dc
-Requires: samba4-client
-Requires: samba4-winbind-clients
+Requires: samba >= 4.4.4
+Requires: samba-dc
+Requires: samba-client
+Requires: samba-winbind-clients
 
 %description core
 The Samba Directory app provides the necessary tools for users, groups, accounts and other directory services.

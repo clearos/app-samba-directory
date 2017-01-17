@@ -103,7 +103,6 @@ class Samba_Directory extends Engine
     const FILE_INITIALIZE_LOG = 'samba_initialize.log';
     const FILE_INITIALIZING = '/var/clearos/samba_directory/lock/initializing';
     const FILE_KERBEROS_CONFIG = '/etc/krb5.conf';
-    const FILE_KERBEROS_PROVISIONED = '/var/lib/samba/private/krb5.conf';
     const FILE_LDAP_CONFIG = '/var/clearos/samba_directory/ldap.conf';
     const CONSTANT_PASSWORD_MIN_LENGTH = 7;
     const CONSTANT_ENCRYPTION = 'AES-256-CBC';
@@ -380,6 +379,14 @@ class Samba_Directory extends Engine
             $file->delete();
         }
 
+        // Prep Kerberos
+        //--------------
+
+        $kerberos_config = new File(self::FILE_KERBEROS_CONFIG);
+
+        if ($kerberos_config->exists())
+            $kerberos_config->delete();
+
         // Provision Samba
         //----------------
 
@@ -466,18 +473,8 @@ class Samba_Directory extends Engine
         $samba_common = new Samba();
         $samba_common->set_dns_forwarder($forwarders[0]);
 
-        // Provision Kerberos
-        //-------------------
-
-        $existing_config = new File(self::FILE_KERBEROS_CONFIG);
-        $provisioned_config = new File(self::FILE_KERBEROS_PROVISIONED, TRUE);
-
-        if ($provisioned_config->exists()) {
-            if ($existing_config->exists())
-                $existing_config->move_to(self::PATH_BACKUP . '/krb5-' . date('Y-M-d-H:i:s') . '.conf');
-
-            $provisioned_config->copy_to(self::FILE_KERBEROS_CONFIG);
-        }
+        $options['disable_strong_auth'] = TRUE;
+        $samba_common->set_ldap_policy($options);
 
         // Set accounts driver at this point (no later to avoid port conflict with OpenLDAP)
         //----------------------------------------------------------------------------------
