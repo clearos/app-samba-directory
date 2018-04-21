@@ -1,15 +1,18 @@
 
 Name: app-samba-directory
 Epoch: 1
-Version: 2.3.0
+Version: 2.5.0
 Release: 1%{dist}
 Summary: Samba Directory
 License: GPLv3
-Group: ClearOS/Apps
+Group: Applications/Apps
+Packager: ClearFoundation
+Vendor: ClearFoundation
 Source: %{name}-%{version}.tar.gz
 Buildarch: noarch
 Requires: %{name}-core = 1:%{version}-%{release}
 Requires: app-base
+Requires: app-accounts
 Requires: app-users
 Requires: app-groups => 1:1.2.3
 
@@ -17,9 +20,9 @@ Requires: app-groups => 1:1.2.3
 The Samba Directory app provides the necessary tools for users, groups, accounts and other directory services.
 
 %package core
-Summary: Samba Directory - Core
+Summary: Samba Directory - API
 License: LGPLv3
-Group: ClearOS/Libraries
+Group: Applications/API
 Provides: system-ldap-driver
 Provides: system-windows-driver
 Provides: system-accounts
@@ -27,7 +30,7 @@ Provides: system-accounts-driver
 Provides: system-groups-driver
 Provides: system-users-driver
 Requires: app-base-core
-Requires: app-accounts >= 1:1.5.5
+Requires: app-accounts-core >= 1:1.5.5
 Requires: app-groups-core >= 1:1.5.10
 Requires: app-ldap-core >= 1:1.5.5
 Requires: app-mode-core
@@ -99,6 +102,7 @@ exit 0
 %files core
 %defattr(-,root,root)
 %exclude /usr/clearos/apps/samba_directory/packaging
+%exclude /usr/clearos/apps/samba_directory/unify.json
 %dir /usr/clearos/apps/samba_directory
 %dir /var/clearos/samba_directory
 %dir /var/clearos/samba_directory/backup

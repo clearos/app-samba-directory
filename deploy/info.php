@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'samba_directory';
-$app['version'] = '2.3.0';
+$app['version'] = '2.5.0';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -35,7 +35,7 @@ $app['core_provides'] = array(
 );
 
 $app['core_requires'] = array(
-    'app-accounts >= 1:1.5.5',
+    'app-accounts-core >= 1:1.5.5',
     'app-groups-core >= 1:1.5.10',
     'app-ldap-core >= 1:1.5.5',
     'app-mode-core',
@@ -51,6 +51,7 @@ $app['core_requires'] = array(
 );
 
 $app['requires'] = array(
+    'app-accounts',
     'app-users',
     'app-groups => 1:1.2.3',
 );
